@@ -9,7 +9,7 @@ time.sleep(60) # wait 60 second for MongoDB and Elasticsearch containers
 
 # mongo db configuration
 cluster = MongoClient(
-    host='mongodb:27017',
+    host='mongo_db:27017',
     serverSelectionTimeoutMS = 3000,
     username=os.environ['MONGO_INITDB_ROOT_USERNAME'] or 'root',
     password=os.environ['MONGO_INITDB_ROOT_PASSWORD'] or 'password'
