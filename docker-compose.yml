@@ -1,0 +1,66 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    env_file:
+      - mongo_db.env
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - elastic_mongo
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    container_name: es01
+    environment:
+      - xpack.security.enabled=false # don't know the purpose
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+    volumes:
+      # bind mount - <host-folder>:<container-folder>
+      # bind mount can be accessed on host computer, but changing data might invoke errors in container
+      # bind mount - /home/ykb/persistant_data/elasticsearch:/usr/share/elasticsearch/data
+      # currently we are using volume approach
+      # volume - <volume-name>:<container-path>
+      - data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic_mongo
+
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.15.2
+    container_name: kib01
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+    ports:
+      - 5601:5601
+    networks:
+      - elastic_mongo
+
+  index_service:
+    container_name: index_service
+    build:
+      context: .
+    env_file:
+      - mongo_db.env
+    depends_on:
+      - mongodb
+      - es01
+    networks:
+      - elastic_mongo
+
+volumes:
+  mongodata:
+    driver: local
+  data:
+    driver: local
+
+networks:
+  elastic_mongo:
+    driver: bridge

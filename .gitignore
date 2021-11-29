@@ -1,0 +1,5 @@
+/venv
+articles_parsed.jl
+/__pychache__
+__pychache__
+mongo_db.env
