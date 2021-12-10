@@ -2,6 +2,10 @@
   * git clone <url>
   * go to repository folder
   * docker-compose up -d
+# Tests
+  * cd ./test from working directory
+  * python ./elastic_test.py # test Elasticsearch
+  * python ./mongo_test.py # test MongoDB
 
 ## Elasticsearch configuration
   * Currently using one node with 1 shards and 1 replica
