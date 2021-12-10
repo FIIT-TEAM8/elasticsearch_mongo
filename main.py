@@ -33,7 +33,8 @@ if not es.indices.exists(index='articles_index'):
     with open(os.getcwd() + '/articles_index_config.json') as articles_config_file:
         configuration = json.load(articles_config_file)
 
-        res = es.indices.create(index="articles_index", body=configuration)
+        # create index
+        res = es.indices.create(index="articles_index", settings=configuration["settings"])
         
         # make sure index was created
         if not res['acknowledged']:
