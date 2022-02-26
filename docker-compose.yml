@@ -9,8 +9,6 @@ services:
       - mongodata:/data/db
     ports:
       - 27017:27017
-    networks:
-      - elastic_mongo
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
@@ -29,38 +27,43 @@ services:
       - data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-    networks:
-      - elastic_mongo
 
-  kib01:
-    image: docker.elastic.co/kibana/kibana:7.15.2
-    container_name: kib01
-    environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
-    ports:
-      - 5601:5601
-    networks:
-      - elastic_mongo
+  # kib01:
+  #   image: docker.elastic.co/kibana/kibana:7.15.2
+  #   container_name: kib01
+  #   environment:
+  #     ELASTICSEARCH_URL: http://es01:9200
+  #     ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - es01
 
-  index_service:
-    container_name: index_service
+  logstash:
+    # currently building image from my local machine
+    # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
     build:
-      context: .
-    env_file:
-      - mongo_db.env
+      context: ./logstash_docker
+    container_name: logstash
+    ports:
+      - "5044:5044"
     depends_on:
-      - mongo_db
       - es01
-    networks:
-      - elastic_mongo
+
+  # index_service:
+  # currently building image from my local machine
+  # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
+  #   build:
+  #     context: ./indexer_docker
+  #   container_name: index_service
+  #   env_file:
+  #     - mongo_db.env
+  #   depends_on:
+  #     - mongo_db
+  #     - es01
 
 volumes:
   mongodata:
     driver: local
   data:
     driver: local
-
-networks:
-  elastic_mongo:
-    driver: bridge
