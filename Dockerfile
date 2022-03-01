@@ -1,4 +1,6 @@
-FROM python:3.9-alpine
+FROM python:3.9
+# in this scenario python alpine version isn't possible, 
+# because in alpine version aren't necessary system dependencies for package ssh-pymongo
 
 ENV GROUP_ID=1000 \
     USER_ID=1000
