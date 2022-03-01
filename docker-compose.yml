@@ -1,32 +1,32 @@
 version: '3'
 services:
-  mongo_db:
-    image: mongo:latest
-    container_name: mongo_db
-    env_file:
-      - mongo_db.env
-    volumes:
-      - ./volumes_binds/mongodata:/data/db
-    ports:
-      - 27017:27017
+  # mongo_db:
+  #   image: mongo:latest
+  #   container_name: mongo_db
+  #   env_file:
+  #     - mongo_db.env
+  #   volumes:
+  #     - ./volumes_binds/mongodata:/data/db
+  #   ports:
+  #     - 27017:27017
 
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-    container_name: es01
-    environment:
-      - xpack.security.enabled=false # don't know the purpose
-      - discovery.type=single-node
-      - http.host=0.0.0.0
-      - transport.host=127.0.0.1
-    volumes:
-      # bind mount - <host-folder>:<container-folder>
-      # bind mount can be accessed on host computer, but changing data might invoke errors in container
-      # bind mount - /home/ykb/persistant_data/elasticsearch:/usr/share/elasticsearch/data
-      # currently we are using volume approach
-      # volume - <volume-name>:<container-path>
-      - ./volumes_binds/elasticsearch:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+  # es01:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+  #   container_name: es01
+  #   environment:
+  #     - xpack.security.enabled=false # don't know the purpose
+  #     - discovery.type=single-node
+  #     - http.host=0.0.0.0
+  #     - transport.host=127.0.0.1
+  #   volumes:
+  #     # bind mount - <host-folder>:<container-folder>
+  #     # bind mount can be accessed on host computer, but changing data might invoke errors in container
+  #     # bind mount - /home/ykb/persistant_data/elasticsearch:/usr/share/elasticsearch/data
+  #     # currently we are using volume approach
+  #     # volume - <volume-name>:<container-path>
+  #     - ./volumes_binds/elasticsearch:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
 
   # kib01:
   #   image: docker.elastic.co/kibana/kibana:7.15.2
@@ -39,30 +39,31 @@ services:
   #   depends_on:
   #     - es01
 
-  logstash:
-    # currently building image from my local machine
-    # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
-    build:
-      context: ./logstash_docker
-    container_name: logstash
-    volumes:
-      - ./volumes_binds/logstashdata:/usr/share/logstash/logstash-mongodb/
-    ports:
-      - "5044:5044"
-    depends_on:
-      - es01
+  # logstash:
+  #   # currently building image from my local machine
+  #   # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
+  #   build:
+  #     context: ./logstash_docker
+  #   container_name: logstash
+  #   volumes:
+  #     - ./volumes_binds/logstashdata:/usr/share/logstash/logstash-mongodb/
+  #   ports:
+  #     - "5044:5044"
+  #   depends_on:
+  #     - es01
 
-  # index_service:
+  es_indexer:
   # currently building image from my local machine
   # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
-  #   build:
-  #     context: ./indexer_docker
-  #   container_name: index_service
-  #   env_file:
-  #     - mongo_db.env
-  #   depends_on:
-  #     - mongo_db
-  #     - es01
+    build:
+      context: .
+    container_name: es_indexer
+    env_file:
+      - es_indexer.env
+      - mongo_db.env
+    # depends_on:
+    #   - mongo_db
+    #   - es01
 
 volumes:
   mongodata:

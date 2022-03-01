@@ -5,12 +5,12 @@ ENV GROUP_ID=1000 \
 
 WORKDIR /index_script
 
-COPY articles_index_config.json ./
-
 COPY requirements.txt ./
 
-COPY main.py ./
-
 RUN pip install -r requirements.txt
+
+COPY articles_index_config.json ./
+
+COPY main.py ./
 
 CMD ["python", "main.py"]

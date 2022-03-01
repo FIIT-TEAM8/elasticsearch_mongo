@@ -7,3 +7,4 @@ mongo_db.env
 /logstash_docker/logstash.conf
 /logstash_docker/logstash.yml
 seed_db.py
+es_indexer.env
