@@ -6,7 +6,7 @@ services:
     env_file:
       - mongo_db.env
     volumes:
-      - mongodata:/data/db
+      - ./volumes_binds/mongodata:/data/db
     ports:
       - 27017:27017
 
@@ -24,7 +24,7 @@ services:
       # bind mount - /home/ykb/persistant_data/elasticsearch:/usr/share/elasticsearch/data
       # currently we are using volume approach
       # volume - <volume-name>:<container-path>
-      - data:/usr/share/elasticsearch/data
+      - ./volumes_binds/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
 
@@ -45,6 +45,8 @@ services:
     build:
       context: ./logstash_docker
     container_name: logstash
+    volumes:
+      - ./volumes_binds/logstashdata:/usr/share/logstash/logstash-mongodb/
     ports:
       - "5044:5044"
     depends_on:
@@ -66,4 +68,6 @@ volumes:
   mongodata:
     driver: local
   data:
+    driver: local
+  logstash:
     driver: local
