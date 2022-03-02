@@ -4,9 +4,9 @@ services:
     image: mongo:latest
     container_name: mongo_db
     env_file:
-      - mongo_db.env
+      - ./configs/mongo_db.env
     volumes:
-      - ./volumes_binds/mongodata:/data/db
+      - mongodata:/data/db
     ports:
       - 27017:27017
 
@@ -24,7 +24,7 @@ services:
       # bind mount - /home/ykb/persistant_data/elasticsearch:/usr/share/elasticsearch/data
       # currently we are using volume approach
       # volume - <volume-name>:<container-path>
-      - ./volumes_binds/elasticsearch:/usr/share/elasticsearch/data
+      - elasticdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
 
@@ -39,35 +39,36 @@ services:
   #   depends_on:
   #     - es01
 
-  logstash:
-    # currently building image from my local machine
-    # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
-    build:
-      context: ./logstash_docker
-    container_name: logstash
-    volumes:
-      - ./volumes_binds/logstashdata:/usr/share/logstash/logstash-mongodb/
-    ports:
-      - "5044:5044"
-    depends_on:
-      - es01
+  # logstash:
+  #   # currently building image from my local machine
+  #   # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
+  #   build:
+  #     context: ./logstash_docker
+  #   container_name: logstash
+  #   volumes:
+  #     - logstashdata:/usr/share/logstash/logstash-mongodb/
+  #   ports:
+  #     - "5044:5044"
+  #   depends_on:
+  #     - es01
 
-  # index_service:
+  es_indexer:
   # currently building image from my local machine
   # when everthing works well it will be added on https://hub.docker.com/search?q=fiitteam8&type=image
-  #   build:
-  #     context: ./indexer_docker
-  #   container_name: index_service
-  #   env_file:
-  #     - mongo_db.env
-  #   depends_on:
-  #     - mongo_db
-  #     - es01
+    build:
+      context: .
+    container_name: es_indexer
+    env_file:
+      - ./configs/es_indexer.env
+      - ./configs/mongo_db.env
+    depends_on:
+      - mongo_db
+      - es01
 
 volumes:
   mongodata:
     driver: local
-  data:
+  elasticdata:
     driver: local
-  logstash:
+  logstashdata:
     driver: local

@@ -2,8 +2,9 @@
 articles_parsed.jl
 /__pychache__
 __pychache__
-mongo_db.env
+/configs/mongo_db.env
 /volumes_binds
 /logstash_docker/logstash.conf
 /logstash_docker/logstash.yml
 seed_db.py
+/configs/es_indexer.env
