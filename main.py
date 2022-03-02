@@ -12,7 +12,7 @@ ssh_user = os.environ['SSH_USER'] or 'root'
 ssh_password = os.environ['SSH_PASSWORD'] or 'password'
 remote_ip = os.environ['REMOTE_IP'] or 'team08-21.studenti.fiit.stuba.sk'
 
-local_mongo_host = os.environ['LOCAL_MONGO_HOST'] or 'mongo_db:27017'
+local_mongo_uri = os.environ['LOCAL_MONGO_URI'] or 'mongodb://mongo_db'
 remote_mongo_uri = os.environ['REMOTE_MONGO_URI'] or 'mongodb://localhost:27017'
 
 mongo_username = os.environ['MONGO_INITDB_ROOT_USERNAME'] or 'root'
@@ -28,7 +28,9 @@ elastic_index_name = os.environ['ELASTIC_INDEX_NAME'] or 'article_index'
 elastic_index_config = os.environ['ELASTIC_INDEX_CONFIG'] or 'articles_index_config.json'
 elastic_field = os.environ['ELASTIC_FIELD'] or 'text' # mongo data will be indexed in this field
 
-time.sleep(60) # wait 60 second for MongoDB and Elasticsearch containers
+wait_seconds = int(os.environ['WAIT_SECONDS']) or 60
+
+time.sleep(wait_seconds) # wait n seconds for MongoDB and Elasticsearch containers
 
 # ssh tunel on remote MongoDB on our machine
 session = MongoSession(remote_ip,
@@ -42,13 +44,11 @@ print('Successfully connected to remote MongoDB.')
 
 # connect to local MongoDB container
 cluster = MongoClient(
-    host=local_mongo_host,
+    host=local_mongo_uri,
     serverSelectionTimeoutMS = 3000,
     username=mongo_username,
     password=mongo_password
 )
-
-print(cluster)
 
 print('Successfully connected to local MongoDB container.')
 
@@ -101,16 +101,6 @@ if not es.indices.exists(index=elastic_index_name):
 local_db = cluster[mongo_db]
 
 local_collection = local_db[mongo_collection]
-
-print(local_collection)
-
-# TODO: maybe try to connect to create explicit network 
-cursor_1 = local_collection.find().limit(50)
-
-for article in cursor_1:
-    print(article)
-
-print('Successfully connected to local MongoDB collection.')
 
 print('Indexing in Elasticsearch and seeding MongoDB on your local containers...')
 
