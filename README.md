@@ -1,6 +1,10 @@
 ## How to run
   * git clone <url>
   * go to repository folder
+  * python -m venv .\venv
+  * .\venv\Scripts\activate
+  * pip install -r requirements.txt
+  * create your own mongo_db.env and es_indexer.env in configs folder based on their examples
   * docker-compose up -d
 ### Tests
   * cd ./test from working directory
@@ -16,5 +20,7 @@
 
 ## MongoDB configuration
   * MongoDB root user_name and password are defined in mongo_db.env file (only mongo_db.example.env is in repository)
-  * Scripts connects to 'articles' collection or creates a new one in 'admin' db.
+ 
+## es_indexer configuration
+  * SSH MongoDB tunneling, Local MongoDB connection, Elastisearch connection and other needed values are defined in es_indexer.env (only es_indexer.example.env is in repository)
 
