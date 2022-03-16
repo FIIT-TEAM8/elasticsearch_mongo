@@ -19,7 +19,7 @@ mongo_username = os.environ['MONGO_INITDB_ROOT_USERNAME'] or 'root'
 mongo_password = os.environ['MONGO_INITDB_ROOT_PASSWORD'] or 'password'
 mongo_db = os.environ['MONGO_DB'] or 'admin'
 mongo_collection = os.environ['MONGO_COLLECTION'] or 'articles'
-mongo_column = os.environ['MONGO_COLUMN'] or 'html' # value of this column will be taken from mongo record and indexed in elasticsearch 
+mongo_column = os.environ['MONGO_COLUMN'] or 'html' # value of this column will be taken from mongo record and indexed in elasticsearch
 num_of_articles = int(os.environ['NUMBER_OF_ARTICLES']) or 100
 
 elastic_container_name = os.environ['ELASTIC_CONTAINER_NAME'] or 'es01'
@@ -62,11 +62,17 @@ print('Successfully authenticate to access remote MongoDB selected database.')
 
 # connect to collection on remote MongoDB
 articles_collection = db[mongo_collection]
+crime_maps_collection = db["crimemaps"]
 
 print('Retrieving articles from remote MongoDB...')
 
 # retrieve articles from remote MongoDB for seeding local MongoDB container and indexing in local Elasticsearch container
 cursor = articles_collection.find().limit(num_of_articles)
+links = []
+for article in cursor:
+    links.append(article["link"])
+
+cursor_crime_map = crime_maps_collection.find({"link": {"$in": links}}).limit(num_of_articles)
 
 print('Articles was successfully retrieved from remote MongoDB.')
 
@@ -89,7 +95,7 @@ if not es.indices.exists(index=elastic_index_name):
 
         # create index
         res = es.indices.create(index=elastic_index_name, settings=configuration["settings"])
-        
+
         # make sure index was created
         if not res['acknowledged']:
             print('Index wasn\'t created')
@@ -101,6 +107,8 @@ if not es.indices.exists(index=elastic_index_name):
 local_db = cluster[mongo_db]
 
 local_collection = local_db[mongo_collection]
+
+local_collection_crimemaps = local_db["crimemaps"]
 
 print('Indexing in Elasticsearch and seeding MongoDB on your local containers...')
 
@@ -125,7 +133,7 @@ for article in cursor:
     # insert into local MongoDB collection
     local_collection.insert_one({"_id": item_id_string, mongo_column: article_column_value})
 
-print('Indexing finished.')
+for article in cursor_crime_map:
+    local_collection_crimemaps.insert_one(article)
 
-# ssh session has to be stopped in the end
-session.stop()
+print('Indexing finished.')
