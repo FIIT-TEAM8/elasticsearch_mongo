@@ -108,7 +108,6 @@ local_db = cluster[mongo_db]
 
 local_collection = local_db[mongo_collection]
 
-local_collection_crimemaps = local_db["crimemaps"]
 
 print('Indexing in Elasticsearch and seeding MongoDB on your local containers...')
 
@@ -133,6 +132,8 @@ for article in cursor:
     # insert into local MongoDB collection
     local_collection.insert_one({"_id": item_id_string, mongo_column: article_column_value})
 
+
+local_collection_crimemaps = local_db["crimemaps"]
 for article in cursor_crime_map:
     local_collection_crimemaps.insert_one(article)
 
