@@ -113,6 +113,7 @@ print('Indexing in Elasticsearch and seeding MongoDB on your local containers...
 
 # iterate through each article form remote collection and perform indexing
 for article in cursor:
+    print("INDEXING ARTICLE")
     # retrieve and convert article's id
     item_id_string = str(article['_id'])
 
@@ -133,9 +134,9 @@ for article in cursor:
     local_collection.insert_one({"_id": item_id_string, mongo_column: article_column_value})
 
 
-local_collection_crimemaps = local_db["crimemaps"]
+local_collection = local_db["crimemaps"]
 for article in cursor_crime_map:
-    local_collection_crimemaps.insert_one(article)
+    local_collection.insert_one(article)
 
 print('Indexing finished.')
 
