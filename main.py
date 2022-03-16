@@ -137,3 +137,6 @@ for article in cursor_crime_map:
     local_collection_crimemaps.insert_one(article)
 
 print('Indexing finished.')
+
+# ssh session has to be stopped in the end
+session.stop()
