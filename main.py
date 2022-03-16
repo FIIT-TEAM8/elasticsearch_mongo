@@ -19,6 +19,7 @@ mongo_username = os.environ['MONGO_INITDB_ROOT_USERNAME'] or 'root'
 mongo_password = os.environ['MONGO_INITDB_ROOT_PASSWORD'] or 'password'
 mongo_db = os.environ['MONGO_DB'] or 'admin'
 mongo_collection = os.environ['MONGO_COLLECTION'] or 'articles'
+mongo_collection_crimemaps = os.environ['MONGO_COLLECTION_CRIMEMAPS'] or 'crimemaps'
 mongo_column = os.environ['MONGO_COLUMN'] or 'html' # value of this column will be taken from mongo record and indexed in elasticsearch
 num_of_articles = int(os.environ['NUMBER_OF_ARTICLES']) or 100
 
@@ -68,8 +69,7 @@ print('Retrieving articles from remote MongoDB...')
 # retrieve articles from remote MongoDB for seeding local MongoDB container and indexing in local Elasticsearch container
 cursor = articles_collection.find().limit(num_of_articles)
 links = []
-for article in cursor:
-    links.append(article["link"])
+
 
 
 print('Articles was successfully retrieved from remote MongoDB.')
@@ -107,11 +107,10 @@ local_db = cluster[mongo_db]
 local_collection = local_db[mongo_collection]
 
 
-print('Indexing in Elasticsearch and seeding MongoDB on your local containers... LOL')
+print('Indexing in Elasticsearch and seeding MongoDB on your local containers...')
 
 # iterate through each article form remote collection and perform indexing
 for article in cursor:
-    print("INDEXING ARTICLE")
     # retrieve and convert article's id
     item_id_string = str(article['_id'])
 
@@ -131,9 +130,12 @@ for article in cursor:
     # insert into local MongoDB collection
     local_collection.insert_one({"_id": item_id_string, mongo_column: article_column_value})
 
-
-local_collection = local_db["crimemaps"]
-crime_maps_collection = db["crimemaps"]
+# mongo cursor behaves like a file pointer - after read, rewind must be executed
+cursor.rewind()
+for article in cursor:
+    links.append(article["link"])
+local_collection = local_db[mongo_collection_crimemaps]
+crime_maps_collection = db[mongo_collection_crimemaps]
 cursor_crime_map = crime_maps_collection.find({"link": {"$in": links}}).limit(num_of_articles)
 for article in cursor_crime_map:
     local_collection.insert_one(article)
