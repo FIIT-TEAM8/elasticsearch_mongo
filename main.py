@@ -109,7 +109,7 @@ local_db = cluster[mongo_db]
 local_collection = local_db[mongo_collection]
 
 
-print('Indexing in Elasticsearch and seeding MongoDB on your local containers...')
+print('Indexing in Elasticsearch and seeding MongoDB on your local containers... LOL')
 
 # iterate through each article form remote collection and perform indexing
 for article in cursor:
