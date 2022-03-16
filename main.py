@@ -62,7 +62,6 @@ print('Successfully authenticate to access remote MongoDB selected database.')
 
 # connect to collection on remote MongoDB
 articles_collection = db[mongo_collection]
-crime_maps_collection = db["crimemaps"]
 
 print('Retrieving articles from remote MongoDB...')
 
@@ -72,7 +71,6 @@ links = []
 for article in cursor:
     links.append(article["link"])
 
-cursor_crime_map = crime_maps_collection.find({"link": {"$in": links}}).limit(num_of_articles)
 
 print('Articles was successfully retrieved from remote MongoDB.')
 
@@ -135,6 +133,8 @@ for article in cursor:
 
 
 local_collection = local_db["crimemaps"]
+crime_maps_collection = db["crimemaps"]
+cursor_crime_map = crime_maps_collection.find({"link": {"$in": links}}).limit(num_of_articles)
 for article in cursor_crime_map:
     local_collection.insert_one(article)
 
