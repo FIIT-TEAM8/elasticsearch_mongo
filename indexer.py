@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from elasticsearch import Elasticsearch
 import indexer_settings as settings
 
+print("Initial sleep...")
 time.sleep(settings.indexer_wait_seconds) # wait n seconds for MongoDB and Elasticsearch containers
 
 # connect to local MongoDB container

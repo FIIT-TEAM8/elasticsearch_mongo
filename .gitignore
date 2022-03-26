@@ -8,3 +8,4 @@ __pychache__
 /logstash_docker/logstash.yml
 seed_db.py
 /configs/es_indexer.env
+*.env
