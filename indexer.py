@@ -18,6 +18,7 @@ local_es = Elasticsearch("http://" + settings.local_elastic_host + ":" + setting
 
 # waiting for elastic
 while not local_es.ping():
+    print("Elastic still not up. Waiting 10 seconds...")
     time.sleep(10)
 
 # retrieve articles from remote MongoDB for seeding local MongoDB container and indexing in local Elasticsearch container
