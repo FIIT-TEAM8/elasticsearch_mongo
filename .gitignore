@@ -1,11 +1,6 @@
-/venv
+venv
 articles_parsed.jl
-/__pychache__
-__pychache__
-/configs/mongo_db.env
-/volumes_binds
-/logstash_docker/logstash.conf
-/logstash_docker/logstash.yml
+./__pycache__
 seed_db.py
 /configs/es_indexer.env
 *.env
