@@ -40,7 +40,16 @@ REMOTE_MONGO_CONN_STRING = "mongodb://{user}:{password}@{server_url}:{port}/".fo
 
 local_elastic_host = os.environ['ELASTIC_HOST'] or 22
 local_elastic_port = os.environ['ELASTIC_PORT'] or 22
+local_elastic_user = "elastic"
+local_elastic_password = os.environ["ELASTIC_PASSWORD"] or "bruh"
 elastic_collection = os.environ['ELASTIC_COLLECTION'] or 22
+LOCAL_ELASTIC_CONNECTION_STRING = "{protocol}://{username}:{password}@{host}:{port}/".format(
+    protocol="https",
+    username=local_elastic_user,
+    password=local_elastic_password,
+    host=local_elastic_host,
+    port=local_elastic_port
+)
 
 indexer_number_of_articles = int(os.environ['INDEXER_NUMBER_OF_ARTICLES']) or 22
 indexer_wait_seconds = int(os.environ['INDEXER_WAIT_SECONDS']) or 22

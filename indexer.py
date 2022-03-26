@@ -15,7 +15,7 @@ remote_db = remote_mongo[settings.remote_mongo_database]
 local_db = local_mongo[settings.remote_mongo_database]
 remote_articles_collection = remote_db[settings.remote_mongo_collection]
 local_collection = local_db[settings.remote_mongo_collection]
-local_es = Elasticsearch("http://" + settings.local_elastic_host + ":" + settings.local_elastic_port, max_retries=10, retry_on_timeout=True)
+local_es = Elasticsearch(hosts=settings.LOCAL_ELASTIC_CONNECTION_STRING, verify_certs=False, max_retries=10, retry_on_timeout=True)
 
 # waiting for elastic
 while not local_es.ping():
