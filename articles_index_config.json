@@ -10,19 +10,11 @@
                     "type":"custom",
                     "tokenizer":"standard",
                     "filter":[
-                        "lowercase",
-                        "english_stop_words"
+                        "lowercase"
                     ]
                 }
         },
-        "filter":{
-            "english_stop_words": {
-                "type": "stop",
-                "stopwords":"_english_",
-                "ignore_case": true,
-                "remove_trailing": true
-              }
-            }
+        "filter":{}
         }
     },
     "mappings": {
@@ -30,7 +22,43 @@
             "enabled": false
         },
         "properties": {
-            "text": {
+            "html": {
+                "type": "text",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "published": {
+                "type": "date",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "link": {
+                "type": "text",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "region": {
+                "type": "text",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "language": {
+                "type": "text",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "keywords": {
+                "type": "text",
+                "store": false,
+                "analyzer": "english_stop_analyzer",
+                "search_analyzer": "english_stop_analyzer"
+            },
+            "title": {
                 "type": "text",
                 "store": false,
                 "analyzer": "english_stop_analyzer",

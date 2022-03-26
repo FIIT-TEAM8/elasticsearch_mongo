@@ -13,6 +13,6 @@ RUN pip install -r requirements.txt
 
 COPY articles_index_config.json ./
 
-COPY main.py ./
+COPY indexer.py ./
 
-CMD ["python", "main.py"]
+CMD ["python", "indexer.py"]
