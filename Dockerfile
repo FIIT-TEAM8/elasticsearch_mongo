@@ -15,4 +15,6 @@ COPY articles_index_config.json ./
 
 COPY indexer.py ./
 
+COPY indexer_settings.py ./
+
 CMD ["python", "indexer.py"]
