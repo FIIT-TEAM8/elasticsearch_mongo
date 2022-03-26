@@ -14,6 +14,11 @@ remote_db = remote_mongo[settings.remote_mongo_database]
 local_db = local_mongo[settings.remote_mongo_database]
 remote_articles_collection = remote_db[settings.remote_mongo_collection]
 local_collection = local_db[settings.remote_mongo_collection]
+local_es = Elasticsearch("http://" + settings.local_elastic_host + ":" + settings.local_elastic_port, max_retries=10, retry_on_timeout=True)
+
+# waiting for elastic
+while not local_es.ping():
+    time.sleep(10)
 
 # retrieve articles from remote MongoDB for seeding local MongoDB container and indexing in local Elasticsearch container
 cursor = remote_articles_collection.find().limit(settings.indexer_number_of_articles)
@@ -21,10 +26,8 @@ print('Articles was successfully retrieved from remote MongoDB.')
 
 # elasticsearch configuration
 # this will connect to local Elasticsearch container
-local_es = Elasticsearch("http://" + settings.local_elastic_host + ":" + settings.local_elastic_port, max_retries=10, retry_on_timeout=True)
-if not local_es.ping():
-    print("local Elastic connection failed, exiting.")
-    exit(1)
+
+
 # create index if not exists
 if not local_es.indices.exists(index=settings.elastic_collection):
     # firstly load index configuration
