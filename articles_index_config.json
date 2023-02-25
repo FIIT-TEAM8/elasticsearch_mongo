@@ -6,63 +6,37 @@
         },
         "analysis":{
             "analyzer":{
-                "english_stop_analyzer":{ 
-                    "type":"custom",
-                    "tokenizer":"standard",
-                    "filter":[
-                        "lowercase"
-                    ]
+                "default":{ 
+                    "type":"standard",
+                },
+                "default_search":{
+                    "type":"standard"
                 }
         },
-        "filter":{}
-        }
     },
     "mappings": {
-        "_source": {
-            "enabled": false
-        },
+        "dynamic": "false",
         "properties": {
             "html": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             },
             "published": {
-                "type": "date",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
+                "type": "text",
             },
             "link": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             },
             "region": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             },
             "language": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             },
             "keywords": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             },
             "title": {
                 "type": "text",
-                "store": false,
-                "analyzer": "english_stop_analyzer",
-                "search_analyzer": "english_stop_analyzer"
             }
         }
     }
